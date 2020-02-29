@@ -2,7 +2,6 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 
 const ExampleViewer = ({ example, size }) => {
-  let sourceButton = null;
   let exampleContent = null;
 
   if (example) {
@@ -11,20 +10,11 @@ const ExampleViewer = ({ example, size }) => {
       url,
     } = example;
     exampleContent = (<ExampleComponent width={size.width} height={size.height} />);
-    sourceButton = (<div key="src" id="button">
-      <a
-        href={`https://github.com/toxicFork/react-three-renderer-example/blob/master/src/examples/${url}.js`}
-        target="_blank"
-      >
-        View source
-      </a>
-    </div>);
   }
 
   return (
     <div id="viewer">
       {exampleContent}
-      {sourceButton}
     </div>
   );
 };

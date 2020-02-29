@@ -56,11 +56,6 @@ gulp.task('webpack-dev-server', () => {
     'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
   ].concat(webpackConfig.entry.app);
 
-  webpackConfig.entry.advanced = [
-    `webpack-dev-server/client?http://${host}:${port}`, // WebpackDevServer host and port
-    'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
-  ].concat(webpackConfig.entry.advanced);
-
   webpackConfig.module.loaders.forEach((loader) => {
     if (loader.loader === 'babel-loader') {
       loader.query.plugins.push('react-hot-loader/babel');

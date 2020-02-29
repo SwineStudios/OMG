@@ -5,10 +5,10 @@ import Stats from 'stats.js';
 
 import React3 from 'react-three-renderer';
 
-import ExampleBase from '../ExampleBase';
+import ExampleBase from '../../ExampleBase';
 
 
-class Geometries extends ExampleBase {
+class Geometries extends ExampleBase { 
   constructor(props, context) {
     super(props, context);
 
@@ -59,6 +59,7 @@ class Geometries extends ExampleBase {
 
     this.stats.domElement.style.position = 'absolute';
     this.stats.domElement.style.top = '0px';
+    this.stats.domElement.style.right = '0px';
 
     this.refs.container.appendChild(this.stats.domElement);
   }
@@ -88,12 +89,13 @@ class Geometries extends ExampleBase {
     } = this.state;
 
     const objectRotation = new THREE.Euler(
-      timer * 5,
-      timer * 2.5,
+      0,
+      0,
       0
     );
 
     return (<div ref="container">
+      <div> p </div>
       <React3
         width={width}
         height={height}
@@ -128,9 +130,9 @@ class Geometries extends ExampleBase {
             lookAt={this.scenePosition}
             name="mainCamera"
             position={new THREE.Vector3(
-              Math.cos(timer) * 800,
+              800,
               400,
-              Math.sin(timer) * 800
+              800 
             )}
           />
           <ambientLight
