@@ -5,7 +5,7 @@ import Stats from 'stats.js';
 
 import React3 from 'react-three-renderer';
 
-import ExampleBase from '../ExampleBase';
+import ExampleBase from '../../ExampleBase';
 
 import Resources from './Resources';
 
