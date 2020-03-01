@@ -10,13 +10,13 @@ for (let i = 0; i < 50; i++) {
     .Vector2(Math.sin(i * 0.2) * Math.sin(i * 0.1) * 15 + 50, (i - 5) * 2));
 }
 
-const Player = ({ position, rotation, head }) => {
+const Player = ({ position, rotation, type }) => {
 
   const body = [];
 
   const heads = [];
 
-  if (head === 0) {
+  if (type === 0) {
     heads.push(
       <octahedronGeometry
         radius={75}
@@ -24,7 +24,7 @@ const Player = ({ position, rotation, head }) => {
         key={0}
       />
     );
-  } else  if (head === 1) {
+  } else  if (type === 1) {
     heads.push(
       <tetrahedronGeometry
         radius={75}
@@ -32,7 +32,7 @@ const Player = ({ position, rotation, head }) => {
         key={0}
       />
     );
-  } else  if (head === 2) {
+  } else  if (type === 2) {
     heads.push(
       <boxGeometry
         width={100}
@@ -44,7 +44,7 @@ const Player = ({ position, rotation, head }) => {
         key={0}
       />
     );
-  } else  if (head === 3) {
+  } else  if (type === 3) {
     heads.push(
       <cylinderGeometry
         radiusTop={25}
@@ -55,7 +55,7 @@ const Player = ({ position, rotation, head }) => {
         key={0}
       />
     );
-  } else  if (head === 4) {
+  } else  if (type === 4) {
     heads.push(
       <latheGeometry
         points={lathePoints}
@@ -63,7 +63,7 @@ const Player = ({ position, rotation, head }) => {
         key={0}
       />
     );
-  } else  if (head === 5) {
+  } else  if (type === 5) {
     heads.push(
       <torusGeometry
         radius={50}
@@ -73,7 +73,7 @@ const Player = ({ position, rotation, head }) => {
         key={0}
       />
     );
-  } else  if (head === 6) {
+  } else  if (type === 6) {
     heads.push(
       <torusKnotGeometry
         radius={50}

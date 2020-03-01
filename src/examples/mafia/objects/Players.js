@@ -15,7 +15,7 @@ const Players = ({ positions, rotations }) => {
       <Player
         position={positions[i]}
         rotation={rotations}
-        head={i}
+        type={i}
         key={i}
       />
     );
