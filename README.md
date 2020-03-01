@@ -9,3 +9,8 @@ npm install
 ``
 npm start
 ``
+#### Local client
+``
+npm run react-dev
+``
+
