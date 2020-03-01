@@ -7,37 +7,28 @@ import React3 from 'react-three-renderer';
 
 import ExampleBase from '../../ExampleBase';
 
+import Players from './objects/Players';
+import HUD from './hud/HUD';
 
-class Geometries extends ExampleBase { 
+
+class Game extends ExampleBase { 
   constructor(props, context) {
     super(props, context);
 
-    this.directionalLightPosition = new THREE.Vector3(0, 1, 0);
+    this.directionalLightPosition = new THREE.Vector3(1, 1, 0);
 
-    this.objectPositions = [
-      new THREE.Vector3(-400, 0, 200),
-      new THREE.Vector3(-200, 0, 200),
-      new THREE.Vector3(0, 0, 200),
-      new THREE.Vector3(200, 0, 200),
-      new THREE.Vector3(-400, 0, 0),
-      new THREE.Vector3(-200, 0, 0),
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(200, 0, 0),
-      new THREE.Vector3(400, 0, 0),
-
-      new THREE.Vector3(-400, 0, -200),
-      new THREE.Vector3(-200, 0, -200),
-      new THREE.Vector3(0, 0, -200),
-      new THREE.Vector3(200, 0, -200),
-      new THREE.Vector3(400, 0, -200),
-    ];
-
-    this.lathePoints = [];
-
-    for (let i = 0; i < 50; i++) {
-      this.lathePoints.push(new THREE
-        .Vector2(Math.sin(i * 0.2) * Math.sin(i * 0.1) * 15 + 50, (i - 5) * 2));
-    }
+    this.objectPositions = {
+      players: {
+        '1': new THREE.Vector3(-200, 0, 200),
+        '2': new THREE.Vector3(0, 0, 200),
+        '3': new THREE.Vector3(-400, 0, 0),
+        '4': new THREE.Vector3(200, 0, 0),
+        '5': new THREE.Vector3(400, 0, 0),
+        '6': new THREE.Vector3(-400, 0, -200),
+        '7': new THREE.Vector3(-200, 0, -200),
+      },
+      'axis': new THREE.Vector3(0, 0, 0),
+    };
 
     this.arrowDir = new THREE.Vector3(0, 1, 0);
     this.arrowOrigin = new THREE.Vector3(0, 0, 0);
@@ -47,6 +38,7 @@ class Geometries extends ExampleBase {
     this.state = {
       ...this.state,
       timer: Date.now() * 0.0001,
+      players: []
     };
   }
 
@@ -62,6 +54,13 @@ class Geometries extends ExampleBase {
     this.stats.domElement.style.right = '0px';
 
     this.refs.container.appendChild(this.stats.domElement);
+
+    //get players from server
+    var response = 5;
+
+    this.setState({
+      players: response
+    })
   }
 
   componentWillUnmount() {
@@ -95,7 +94,7 @@ class Geometries extends ExampleBase {
     );
 
     return (<div ref="container">
-      <div> p </div>
+      <HUD timer={timer.toFixed(1)} />
       <React3
         width={width}
         height={height}
@@ -143,180 +142,13 @@ class Geometries extends ExampleBase {
             position={this.directionalLightPosition}
             lookAt={this.scenePosition}
           />
-          <mesh
-            position={this.objectPositions[0]}
-            rotation={objectRotation}
-          >
-            <sphereGeometry
-              radius={75}
-              widthSegments={20}
-              heightSegments={10}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[1]}
-            rotation={objectRotation}
-          >
-            <icosahedronGeometry
-              radius={75}
-              detail={1}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[2]}
-            rotation={objectRotation}
-          >
-            <octahedronGeometry
-              radius={75}
-              detail={2}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[3]}
-            rotation={objectRotation}
-          >
-            <tetrahedronGeometry
-              radius={75}
-              detail={0}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[4]}
-            rotation={objectRotation}
-          >
-            <planeBufferGeometry
-              width={100}
-              height={100}
-              widthSegments={4}
-              heightSegments={4}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[5]}
-            rotation={objectRotation}
-          >
-            <boxGeometry
-              width={100}
-              height={100}
-              depth={100}
-              widthSegments={4}
-              heightSegments={4}
-              depthSegments={4}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[6]}
-            rotation={objectRotation}
-          >
-            <circleGeometry
-              radius={50}
-              segments={20}
-              thetaStart={0}
-              thetaLength={Math.PI * 2}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[7]}
-            rotation={objectRotation}
-          >
-            <ringGeometry
-              innerRadius={10}
-              outerRadius={50}
-              thetaSegments={20}
-              phiSegments={5}
-              thetaStart={0}
-              thetaLength={Math.PI * 2}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[8]}
-            rotation={objectRotation}
-          >
-            <cylinderGeometry
-              radiusTop={25}
-              radiusBottom={75}
-              height={100}
-              radialSegments={40}
-              heightSegments={5}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[9]}
-            rotation={objectRotation}
-          >
-            <latheGeometry
-              points={this.lathePoints}
-              segments={20}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[10]}
-            rotation={objectRotation}
-          >
-            <torusGeometry
-              radius={50}
-              tube={20}
-              radialSegments={20}
-              tubularSegments={20}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <mesh
-            position={this.objectPositions[11]}
-            rotation={objectRotation}
-          >
-            <torusKnotGeometry
-              radius={50}
-              tube={10}
-              radialSegments={50}
-              tubularSegments={20}
-            />
-            <materialResource
-              resourceId="material"
-            />
-          </mesh>
-          <axisHelper
-            position={this.objectPositions[12]}
-            size={50}
-            rotation={objectRotation}
+          <Players
+            positions = {this.objectPositions['players']}
+            rotations = {objectRotation}
           />
-          <arrowHelper
-            dir={this.arrowDir}
-            origin={this.arrowOrigin}
-            length={50}
-            position={this.objectPositions[13]}
+          <axisHelper
+            position={this.objectPositions['axis']}
+            size={50}
             rotation={objectRotation}
           />
         </scene>
@@ -325,4 +157,4 @@ class Geometries extends ExampleBase {
   }
 }
 
-export default Geometries;
+export default Game;
