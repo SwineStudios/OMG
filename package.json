@@ -4,7 +4,8 @@
   "description": "open moba game",
   "main": "index.js",
   "scripts": {
-    "start": "gulp webpack-dev-server",
+    "start": "nodemon server/index.js",
+    "react-dev": "gulp webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
