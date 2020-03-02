@@ -7,6 +7,9 @@ import Roles from './Roles';
 
 const HUD = ({ timer, players }) => {
 
+  var minutes = Math.floor(timer / 60);
+  var seconds = timer - minutes * 60;
+
   var roles = {};
 
   for (var player in players) {
@@ -22,7 +25,7 @@ const HUD = ({ timer, players }) => {
 
   return (
     <div>
-      {timer}
+      {minutes + ':' + seconds}
       <div style={{
         'width': '100%',
         'height': '20px',

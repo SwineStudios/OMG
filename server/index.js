@@ -18,20 +18,12 @@ app.use(express.static(__dirname + '/../client/dist'));
 //================================
 //================================
 
+const queue = 0;
+
+const roundLength = 600;
+var time = Date.now() * 0.0001;
 
 const players = {
-  '1': {
-    'role': 'mafia',
-    'vote': '1'
-  },
-  '2': {
-    'role': 'doctor',
-    'vote': undefined
-  },
-  '3': {
-    'role': 'survivor',
-    'vote': undefined
-  }
 }
 
 
@@ -42,8 +34,18 @@ const players = {
 //  setup(req, res);
 //});
 
+app.get('/time', (req, res) => {
+  res.send({
+    'timeStart': time,
+    'roundLength': roundLength
+  });
+});
+
 app.get('/players', (req, res) => {
-  res.send(players);
+  if (Object.keys(players).length !== 0)
+    res.send(players);
+  else
+    res.send({'queue': queue});
 });
 
 //================================
@@ -65,6 +67,13 @@ app.listen(PORT, () => {
 
 
   const mafia = () => {
+
+    //handle round time out
+    var remaining = roundLength - (Date.now() * 0.0001 - time).toFixed(1) * 10;
+
+    if (remaining < 0)
+      time = Date.now() * 0.0001;
+    //
 
 
     

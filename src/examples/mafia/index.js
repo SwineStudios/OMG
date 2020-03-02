@@ -39,6 +39,8 @@ class Game extends ExampleBase {
     this.state = {
       ...this.state,
       timer: Date.now() * 0.0001,
+      timeStart: 0,
+      roundLength: 100,
       players: 0
     };
   }
@@ -60,13 +62,10 @@ class Game extends ExampleBase {
 
     var thisModule = this;
 
-    axios.get('http://localhost:3000/players/').then(function (response) {
-      thisModule.setState({
-        players: response.data
-      })
-    }).catch(function (error) {
-      console.log(error);
-    });
+    axios.get('http://localhost:3000/time/').then(function (response) {
+
+      thisModule.setState(response.data);
+    })
   }
 
   componentWillUnmount() {
@@ -81,6 +80,18 @@ class Game extends ExampleBase {
     });
 
     this.stats.update();
+
+    var thisModule = this;
+
+    axios.get('http://localhost:3000/players/').then(function (response) {
+
+      var data = response.data;
+      if (data.queue) data = data.queue;
+
+      thisModule.setState({
+        players: data
+      })
+    })
   }
 
   render() {
@@ -91,6 +102,8 @@ class Game extends ExampleBase {
 
     const {
       timer,
+      timeStart,
+      roundLength
     } = this.state;
 
     const objectRotation = new THREE.Euler(
@@ -99,9 +112,11 @@ class Game extends ExampleBase {
       0
     );
 
+    var time = roundLength - (timer - timeStart).toFixed(1) * 10;
+
     return (<div ref="container">
       <HUD 
-        timer={timer.toFixed(1)}
+        timer={time}
         players = {this.state.players}
       />
       <React3
