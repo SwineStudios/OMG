@@ -1,6 +1,4 @@
 import React from 'react';
-import * as THREE from 'three';
-import React3 from 'react-three-renderer';
 
 
 const Role = ({ role, number }) => {

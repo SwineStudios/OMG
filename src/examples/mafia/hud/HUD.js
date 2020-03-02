@@ -1,7 +1,6 @@
 import React from 'react';
-import * as THREE from 'three';
-import React3 from 'react-three-renderer';
 
+import Voting from './Voting';
 import Roles from './Roles';
 
 
@@ -33,8 +32,10 @@ const HUD = ({ timer, players }) => {
       }}/>
       {typeof players === 'number' ?
         players + " players joined" :
-        <Roles roles={roles}/>
-        <Voting players={players}/>
+        <span>
+          <Roles roles={roles}/>
+          <Voting players={players}/>
+        </span>
       }
     </div>
   );
