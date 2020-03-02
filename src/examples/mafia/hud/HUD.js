@@ -34,6 +34,7 @@ const HUD = ({ timer, players }) => {
       {typeof players === 'number' ?
         players + " players joined" :
         <Roles roles={roles}/>
+        <Voting players={players}/>
       }
     </div>
   );

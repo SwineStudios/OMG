@@ -36,6 +36,7 @@
     "react-sizeme": "^2.3.4",
     "react-three-renderer": "^3.2.1",
     "stats.js": "^1.0.0",
+    "styled-components": "^5.0.1",
     "three": "^0.86.0"
   },
   "devDependencies": {
