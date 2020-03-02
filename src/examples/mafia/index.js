@@ -73,6 +73,11 @@ class Game extends ExampleBase {
     delete this.stats;
   }
 
+
+  handleChange(event) {
+    axios.post('http://localhost:3000/vote/' + this.state.player + '/' + event.target.value);
+  }
+
   _onAnimateInternal() {
     const timer = Date.now() * 0.0001;
 
@@ -120,13 +125,12 @@ class Game extends ExampleBase {
       }
     }
 
-
-
     return (<div ref="container">
       <HUD 
         timer={time}
         players={this.state.players}
         me={this.state.player}
+        handleChange={this.handleChange.bind(this)}
       />
       <React3
         width={width}

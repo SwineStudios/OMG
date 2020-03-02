@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Voting = ({ players, me }) => {
+const Voting = ({ players, me, change }) => {
 
   const votes = [];
   const options = [];
@@ -21,7 +21,7 @@ const Voting = ({ players, me }) => {
   return (
     <span>
       Your vote:
-      <select id="voteselect">
+      <select id="voteselect" onChange={change}>
         {options}
       </select>
       <div style={{

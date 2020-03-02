@@ -4,7 +4,7 @@ import Voting from './Voting';
 import Roles from './Roles';
 
 
-const HUD = ({ timer, players, me }) => {
+const HUD = ({ timer, players, me, handleChange }) => {
 
   var minutes = Math.floor(timer / 60);
   var seconds = timer - minutes * 60;
@@ -39,7 +39,7 @@ const HUD = ({ timer, players, me }) => {
             'height': '20px',
             'backgroundColor': 'black'
           }}/>
-          <Voting players={players} me={me}/>
+          <Voting players={players} me={me} change={handleChange}/>
         </span>
       }
     </div>
