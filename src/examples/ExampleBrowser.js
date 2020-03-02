@@ -6,7 +6,7 @@ import SimpleExample from './Simple/index';
 import GeometriesExample from './Geometries/index';
 import GeometryShapesExample from './GeometryShapes/index';
 
-import Mafia from '../Mafia/index';
+import Mafia from './mafia/index';
 
 const examples = [
   {

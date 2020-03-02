@@ -31,9 +31,6 @@ export default {
     app: [
       './src/index.jsx',
     ],
-    advanced: [
-      './src/examples/AdvancedExample/index.js',
-    ],
   },
   output: {
     path: outPath,
