@@ -6,13 +6,20 @@ import Role from './Role';
 const Roles = ({ roles }) => {
 
   const icons = [];
+  const sortedRoles = [];
 
   for (var role in roles) {
+    sortedRoles.push(role);
+  }
+
+  sortedRoles.sort();
+
+  for (var i = 0; i < sortedRoles.length; i++) {
     icons.push(
       <Role
-        role={role}
-        number={roles[role]}
-        key={role}
+        role={sortedRoles[i]}
+        number={roles[sortedRoles[i]]}
+        key={sortedRoles[i]}
       />
     );
   }

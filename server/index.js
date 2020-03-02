@@ -112,7 +112,7 @@ const beginning = () => {
 
   for (let i = 1; i <= roles.length; i++) {
     players[i] = {
-      'role': roles[i]
+      'role': roles[i-1]
     }
   }
 }
