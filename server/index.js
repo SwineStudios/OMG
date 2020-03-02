@@ -18,40 +18,120 @@ app.use(express.static(__dirname + '/../client/dist'));
 //================================
 //================================
 
-const queue = 0;
+let queue = 0;
 
 const roundLength = 600;
-var time = Date.now() * 0.0001;
+let time = Date.now() * 0.0001;
 
 const players = {
 }
+
+const avatars = {
+  '1': {'x': -200, 'z': 200},
+  '2': {'x': 0, 'z': 200},
+  '3': {'x': -400, 'z': 0},
+  '4': {'x': 200, 'z': 0},
+  '5': {'x': 400, 'z': 0},
+  '6': {'x': -400, 'z': -200},
+  '7': {'x': -200, 'z': -200}
+}
+
+let pregame = false;
+
+const setup = {
+  'mafia': 2,
+  'survivor': 3,
+  'doctor': 1,
+  'cop': 1
+}
+
+let roles = [];
 
 
 //================================
 //================================
 
 //app.post('/', (req, res) => {
-//  setup(req, res);
+//  newSetup(req, res);
 //});
 
-app.get('/time', (req, res) => {
+app.get('/start', (req, res) => {
+  queue++;
+  let player = queue;
   res.send({
+    'player': player,
     'timeStart': time,
     'roundLength': roundLength
   });
 });
 
-app.get('/players', (req, res) => {
-  if (Object.keys(players).length !== 0)
-    res.send(players);
-  else
-    res.send({'queue': queue});
+app.get('/update', (req, res) => {
+  let obj = {};
+
+  for (let player in players)
+    obj.players.player = player[player];
+
+  if (Object.keys(players).length === 0)
+    obj.players = queue;
+
+  obj.avatars = avatars;
+
+  res.send(obj);
 });
 
+app.post('/vote/:player/:target', (req, res) => {
+  players[req.params.player].vote = req.params.target;
+  res.end();
+});
+
+app.post('/click/:player/:x/:z')
+
 //================================
 //================================
 
+const newGame = () => {
+  for (let role in setup)
+    for (let i = 0; i < setup[role]; i++)
+      roles.push(role);
+  shuffle(roles);
+};
 
+const newDay = () => {
+  time = Date.now() * 0.0001;
+  each(player, (p) => {
+    p.vote = undefined;
+  });
+};
+
+const beginning = () => {
+  pregame = false;
+}
+
+const shuffle = (a) => {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const each = function(collection, iterator) {
+  if (!Array.isArray(collection))
+    for (let key in collection)
+      iterator(collection[key], key, collection);
+  else
+    for (let i = 0; i < collection.length; i++)
+      iterator(collection[i], i, collection);
+};
+
+const filter = (collection, test) => {
+  let arr = [];
+  each(collection, function(item){
+    if(test(item))
+      arr.push(item);
+  });
+  return arr;
+};
 
 
 //================================
@@ -65,23 +145,46 @@ const framelength = 200;
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 
+  pregame = true;
+
+  newGame();
 
   const mafia = () => {
 
-    //handle round time out
-    var remaining = roundLength - (Date.now() * 0.0001 - time).toFixed(1) * 10;
-
-    if (remaining < 0)
-      time = Date.now() * 0.0001;
+    //check if room has filled
+    if (pregame && queue > 6)
+      beginning();
     //
 
+    //wait for players
+    if (pregame) {
+      setTimeout(mafia, framelength);
+      return;
+    }
+    //
 
+    //handle round time out
+    const remaining = roundLength - (Date.now() * 0.0001 - time).toFixed(1) * 10;
+
+    if (remaining < 0)
+      newDay();
+    //
+
+    //handle player behavior
+    const nonVoters = filter(players, (p) => {
+      return typeof p.vote === "undefined"
+    });
+
+    if (nonVoters.length === 0) {
+      newDay();
+    }
+    //
     
 
 
 
     setTimeout(mafia, framelength);
-  }
+  };
   mafia();
 
 });

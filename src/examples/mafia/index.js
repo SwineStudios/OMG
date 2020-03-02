@@ -58,11 +58,12 @@ class Game extends ExampleBase {
 
     this.refs.container.appendChild(this.stats.domElement);
 
-    //get players from server
+
+    //get initial data
 
     var thisModule = this;
 
-    axios.get('http://localhost:3000/time/').then(function (response) {
+    axios.get('http://localhost:3000/start/').then(function (response) {
 
       thisModule.setState(response.data);
     })
@@ -83,14 +84,12 @@ class Game extends ExampleBase {
 
     var thisModule = this;
 
-    axios.get('http://localhost:3000/players/').then(function (response) {
+    axios.get('http://localhost:3000/update/').then(function (response) {
 
       var data = response.data;
-      if (data.queue) data = data.queue;
+      if (data.queue) data.players = data.queue;
 
-      thisModule.setState({
-        players: data
-      })
+      thisModule.setState(response.data);
     })
   }
 
@@ -113,6 +112,15 @@ class Game extends ExampleBase {
     );
 
     var time = roundLength - (timer - timeStart).toFixed(1) * 10;
+
+    var avatars = {};
+    if (this.state.avatars) {
+      for (let avatar in this.state.avatars) {
+        avatars[avatar] = new THREE.Vector3(this.state.avatars[avatar].x, 0, this.state.avatars[avatar].z);
+      }
+    }
+
+
 
     return (<div ref="container">
       <HUD 
@@ -167,7 +175,9 @@ class Game extends ExampleBase {
             lookAt={this.scenePosition}
           />
           <Players
-            positions = {this.objectPositions['players']}
+            positions = {this.state.avatars ?
+              avatars :
+              this.objectPositions['players']}
             rotations = {objectRotation}
           />
           <axisHelper
