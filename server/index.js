@@ -100,7 +100,7 @@ const newGame = () => {
 
 const newDay = () => {
   time = Date.now() * 0.0001;
-  each(player, (p) => {
+  each(players, (p) => {
     p.vote = undefined;
   });
 };
@@ -110,7 +110,7 @@ const beginning = () => {
 
   console.log('game begins');
 
-  for (let i = 0; i < roles.length; i++) {
+  for (let i = 1; i <= roles.length; i++) {
     players[i] = {
       'role': roles[i]
     }
@@ -162,7 +162,7 @@ app.listen(PORT, () => {
   const mafia = () => {
 
     //check if room has filled
-    if (pregame && queue >= roles.length)
+    if (pregame && queue >= 1)//roles.length)
       beginning();
     //
 
