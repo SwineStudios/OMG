@@ -2,6 +2,7 @@ import React from 'react';
 
 import * as THREE from 'three';
 import Stats from 'stats.js';
+import axios from 'axios';
 
 import React3 from 'react-three-renderer';
 
@@ -38,7 +39,7 @@ class Game extends ExampleBase {
     this.state = {
       ...this.state,
       timer: Date.now() * 0.0001,
-      players: []
+      players: 0
     };
   }
 
@@ -56,11 +57,16 @@ class Game extends ExampleBase {
     this.refs.container.appendChild(this.stats.domElement);
 
     //get players from server
-    var response = 5;
 
-    this.setState({
-      players: response
-    })
+    var thisModule = this;
+
+    axios.get('http://localhost:3000/players/').then(function (response) {
+      thisModule.setState({
+        players: response.data
+      })
+    }).catch(function (error) {
+      console.log(error);
+    });
   }
 
   componentWillUnmount() {
@@ -94,7 +100,10 @@ class Game extends ExampleBase {
     );
 
     return (<div ref="container">
-      <HUD timer={timer.toFixed(1)} />
+      <HUD 
+        timer={timer.toFixed(1)}
+        players = {this.state.players}
+      />
       <React3
         width={width}
         height={height}
