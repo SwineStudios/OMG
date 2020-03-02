@@ -66,10 +66,9 @@ app.get('/start', (req, res) => {
 });
 
 app.get('/update', (req, res) => {
-  let obj = {};
-
-  for (let player in players)
-    obj.players.player = player[player];
+  let obj = {
+    players: players
+  };
 
   if (Object.keys(players).length === 0)
     obj.players = queue;
@@ -84,12 +83,15 @@ app.post('/vote/:player/:target', (req, res) => {
   res.end();
 });
 
-app.post('/click/:player/:x/:z')
+app.post('/click/:player/:x/:z', (req, res) => {
+
+});
 
 //================================
 //================================
 
 const newGame = () => {
+  roles = [];
   for (let role in setup)
     for (let i = 0; i < setup[role]; i++)
       roles.push(role);
@@ -105,6 +107,14 @@ const newDay = () => {
 
 const beginning = () => {
   pregame = false;
+
+  console.log('game begins');
+
+  for (let i = 0; i < roles.length; i++) {
+    players[i] = {
+      'role': roles[i]
+    }
+  }
 }
 
 const shuffle = (a) => {
@@ -152,7 +162,7 @@ app.listen(PORT, () => {
   const mafia = () => {
 
     //check if room has filled
-    if (pregame && queue > 6)
+    if (pregame && queue >= roles.length)
       beginning();
     //
 

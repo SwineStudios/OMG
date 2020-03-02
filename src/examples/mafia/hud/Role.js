@@ -9,7 +9,7 @@ const Role = ({ role, number }) => {
 
   if (role === 'survivor') color = 'blue';
   if (role === 'mafia') color = 'black';
-  if (role === 'cop') color = 'brown';
+  if (role === 'cop') color = 'darkgoldenrod';
   if (role === 'doctor') color = 'green';
 
   return (

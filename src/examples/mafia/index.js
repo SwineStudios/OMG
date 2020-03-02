@@ -125,7 +125,7 @@ class Game extends ExampleBase {
     return (<div ref="container">
       <HUD 
         timer={time}
-        players = {this.state.players}
+        players={this.state.players}
       />
       <React3
         width={width}
