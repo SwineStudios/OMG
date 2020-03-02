@@ -26,7 +26,7 @@ const HUD = ({ timer, players }) => {
       <div style={{
         'width': '100%',
         'height': '20px',
-        'background-color': 'black'
+        'backgroundColor': 'black'
       }}/>
       {typeof players === 'number' ?
         players + " players joined" :

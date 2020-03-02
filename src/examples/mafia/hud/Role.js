@@ -17,9 +17,9 @@ const Role = ({ role, number }) => {
       <span style={{
           'height': '20px',
           'width': '20px',
-          'margin-top': '4px',
-          'margin-left': '20px',
-          'background-color': color,
+          'marginTop': '4px',
+          'marginLeft': '20px',
+          'backgroundColor': color,
           'display': 'inline-block'
       }}/>
       { ' x ' + number }
