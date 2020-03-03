@@ -6,16 +6,19 @@ import React3 from 'react-three-renderer';
 import Player from './Player';
 
 
-const Players = ({ positions, rotations }) => {
+const Players = ({ positions, rotations, dead }) => {
 
   const players = [];
 
-  for (var i = 0; i < Object.keys(positions).length; i++) {
+  for (var i = 1; i <= Object.keys(positions).length; i++) {
+    if (i in dead) {
+      continue;
+    }
     players.push(
       <Player
         position={positions[i]}
         rotation={rotations}
-        type={i}
+        type={i - 1}
         key={i}
       />
     );

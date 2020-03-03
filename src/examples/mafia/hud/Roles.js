@@ -1,20 +1,25 @@
 import React from 'react';
-import * as THREE from 'three';
-import React3 from 'react-three-renderer';
 
 import Role from './Role';
 
 
-const Roles = ({ roles }) => {
+const Roles = ({ roles, role }) => {
 
   const icons = [];
+  const sortedRoles = [];
 
-  for (var role in roles) {
+  for (let role in roles) {
+    sortedRoles.push(role);
+  }
+
+  sortedRoles.sort();
+
+  for (var i = 0; i < sortedRoles.length; i++) {
     icons.push(
       <Role
-        role={role}
-        number={roles[role]}
-        key={role}
+        role={sortedRoles[i]}
+        number={roles[sortedRoles[i]]}
+        key={sortedRoles[i]}
       />
     );
   }
@@ -22,6 +27,11 @@ const Roles = ({ roles }) => {
   return (
     <div>
       {icons}
+      <span style={{
+        'paddingLeft': '40px'
+      }}>
+        My role: {role}
+      </span>
     </div>
   );
 };

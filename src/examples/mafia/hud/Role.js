@@ -1,6 +1,4 @@
 import React from 'react';
-import * as THREE from 'three';
-import React3 from 'react-three-renderer';
 
 
 const Role = ({ role, number }) => {
@@ -9,7 +7,7 @@ const Role = ({ role, number }) => {
 
   if (role === 'survivor') color = 'blue';
   if (role === 'mafia') color = 'black';
-  if (role === 'cop') color = 'brown';
+  if (role === 'cop') color = 'darkgoldenrod';
   if (role === 'doctor') color = 'green';
 
   return (

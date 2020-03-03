@@ -11,6 +11,29 @@ import ExampleBase from '../../ExampleBase';
 import Players from './objects/Players';
 import HUD from './hud/HUD';
 
+document.addEventListener("DOMContentLoaded", init, false);
+var canvas = null;
+function init() {
+  canvas = document.getElementsByTagName("canvas")[0];
+  canvas.addEventListener("mousedown", getPosition, false);
+}
+
+function getPosition(event) {
+  var x = new Number();
+  var y = new Number();
+  if (event.x != undefined && event.y != undefined) {
+    x = event.x;
+    y = event.y;
+  } else { // Firefox method to get the position
+    x = event.clientX + document.body.scrollLeft +
+        document.documentElement.scrollLeft;
+    y = event.clientY + document.body.scrollTop +
+        document.documentElement.scrollTop;
+  }
+  x -= canvas.offsetLeft;
+  y -= canvas.offsetTop;
+  alert("x: " + x + "  y: " + y);
+}
 
 class Game extends ExampleBase { 
   constructor(props, context) {
@@ -36,9 +59,14 @@ class Game extends ExampleBase {
 
     this.scenePosition = new THREE.Vector3(0, 0, 0);
 
+    this.day = 0;
+    this.dawn = false;
+
     this.state = {
       ...this.state,
       timer: Date.now() * 0.0001,
+      timeStart: 0,
+      roundLength: 100,
       players: 0
     };
   }
@@ -56,21 +84,23 @@ class Game extends ExampleBase {
 
     this.refs.container.appendChild(this.stats.domElement);
 
-    //get players from server
+
+    //get initial data
 
     var thisModule = this;
 
-    axios.get('http://localhost:3000/players/').then(function (response) {
-      thisModule.setState({
-        players: response.data
-      })
-    }).catch(function (error) {
-      console.log(error);
-    });
+    axios.get('http://localhost:3000/start/').then(function (response) {
+
+      thisModule.setState(response.data);
+    })
   }
 
   componentWillUnmount() {
     delete this.stats;
+  }
+
+  handleChange(event) {
+    axios.post('http://localhost:3000/vote/' + this.state.player + '/' + event.target.value);
   }
 
   _onAnimateInternal() {
@@ -81,6 +111,18 @@ class Game extends ExampleBase {
     });
 
     this.stats.update();
+
+    var thisModule = this;
+
+    axios.get('http://localhost:3000/update/').then(function (response) {
+
+      var data = response.data;
+      if (data.queue) data.players = data.queue;
+      if (!data.players[thisModule.state.player]) data.dead = true;
+      else data.dead = false;
+
+      thisModule.setState(data);
+    })
   }
 
   render() {
@@ -91,6 +133,8 @@ class Game extends ExampleBase {
 
     const {
       timer,
+      timeStart,
+      roundLength
     } = this.state;
 
     const objectRotation = new THREE.Euler(
@@ -99,11 +143,37 @@ class Game extends ExampleBase {
       0
     );
 
+    var time = roundLength - (timer - timeStart).toFixed(1) * 10;
+
+    if (this.day !== this.state.day) {
+      this.dawn = true;
+      this.day = this.state.day;
+    } else {
+      this.dawn = false;
+    }
+
+    var avatars = {};
+    if (this.state.avatars) {
+      for (let avatar in this.state.avatars) {
+        avatars[avatar] = new THREE.Vector3(this.state.avatars[avatar].x, 0, this.state.avatars[avatar].z);
+      }
+    }
+
+    var deadList = this.state.deadList || {};
+
     return (<div ref="container">
-      <HUD 
-        timer={timer.toFixed(1)}
-        players = {this.state.players}
-      />
+      {this.state.dead ? "You are dead" :
+        <HUD 
+          timer={time}
+          players={this.state.players}
+          me={this.state.player}
+          handleChange={this.handleChange.bind(this)}
+          dawn={this.dawn}
+          night={this.state.night}
+          report={this.state.report}
+          suspect={this.state.suspect}
+        />
+      }
       <React3
         width={width}
         height={height}
@@ -152,8 +222,11 @@ class Game extends ExampleBase {
             lookAt={this.scenePosition}
           />
           <Players
-            positions = {this.objectPositions['players']}
-            rotations = {objectRotation}
+            positions={this.state.avatars ?
+              avatars :
+              this.objectPositions['players']}
+            rotations={objectRotation}
+            dead={deadList}
           />
           <axisHelper
             position={this.objectPositions['axis']}
