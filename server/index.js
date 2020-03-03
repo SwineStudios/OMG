@@ -37,6 +37,8 @@ const avatars = {
 }
 
 let pregame = false;
+let day = 0;
+let night = false;
 
 const setup = {
   'mafia': 2,
@@ -75,6 +77,9 @@ app.get('/update', (req, res) => {
 
   obj.avatars = avatars;
 
+  obj.day = day;
+  obj.night = night;
+
   res.send(obj);
 });
 
@@ -91,6 +96,7 @@ app.post('/click/:player/:x/:z', (req, res) => {
 //================================
 
 const newGame = () => {
+  dawn = true;
   roles = [];
   for (let role in setup)
     for (let i = 0; i < setup[role]; i++)
@@ -100,9 +106,49 @@ const newGame = () => {
 
 const newDay = () => {
   time = Date.now() * 0.0001;
+  
+  day++;
+  night = !night;
+
   each(players, (p) => {
-    p.vote = undefined;
+
+    if (night && p.role !== 'survivor')
+      p.vote = undefined;
   });
+};
+
+const countVotes = () => {
+  const votes = {};
+
+  if (night) {
+
+  } else {
+    each(players, (p) => {
+      if (votes[p.vote])
+        votes[p.vote]++;
+      else
+        votes[p.vote] = 1;
+    });
+
+    let max = -1;
+    let victim = '';
+
+    for (let target in votes) {
+      if (votes[target] > max) {
+        max = votes[target];
+        victim = target;
+      } else if (votes[target] === max) {
+        victim = '';
+      }
+    }
+
+    if (victim !== '') {
+      delete players[victim];
+      console.log(players);
+      newDay();
+    }
+  }
+
 };
 
 const beginning = () => {
@@ -115,7 +161,7 @@ const beginning = () => {
       'role': roles[i-1]
     }
   }
-}
+};
 
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i--) {
@@ -123,7 +169,7 @@ const shuffle = (a) => {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
+};
 
 const each = function(collection, iterator) {
   if (!Array.isArray(collection))
@@ -186,7 +232,7 @@ app.listen(PORT, () => {
     });
 
     if (nonVoters.length === 0) {
-      newDay();
+      countVotes();
     }
     //
     

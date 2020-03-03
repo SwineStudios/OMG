@@ -4,7 +4,7 @@ import Voting from './Voting';
 import Roles from './Roles';
 
 
-const HUD = ({ timer, players, me, handleChange }) => {
+const HUD = ({ timer, players, me, handleChange, dawn, night }) => {
 
   var minutes = Math.floor(timer / 60);
   var seconds = timer - minutes * 60;
@@ -22,6 +22,15 @@ const HUD = ({ timer, players, me, handleChange }) => {
     }
   }
 
+  let myRole = '';
+  if (players[me])
+    myRole = players[String(me)]['role'];
+
+  var isSurvivor = false;
+  if (night) {
+    isSurvivor = (myRole === 'survivor');
+  }
+
   return (
     <div>
       {minutes + ':' + seconds}
@@ -33,13 +42,26 @@ const HUD = ({ timer, players, me, handleChange }) => {
       {typeof players === 'number' ?
         players + " players joined" :
         <span>
-          <Roles roles={roles}/>
-          <div style={{
-            'width': '100%',
-            'height': '20px',
-            'backgroundColor': 'black'
-          }}/>
-          <Voting players={players} me={me} change={handleChange}/>
+          <Roles roles={roles} role={myRole}/>
+          { !night || !isSurvivor ?
+            <span>
+              <div style={{
+                'width': '100%',
+                'height': '20px',
+                'backgroundColor': 'black'
+              }}/>
+              <Voting
+                players={players}
+                me={me}
+                role={myRole}
+                change={handleChange}
+                dawn={dawn}
+                night={night}
+              />
+            </span>
+            :
+            null
+          }
         </span>
       }
     </div>

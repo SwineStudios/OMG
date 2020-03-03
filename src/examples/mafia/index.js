@@ -36,6 +36,9 @@ class Game extends ExampleBase {
 
     this.scenePosition = new THREE.Vector3(0, 0, 0);
 
+    this.day = 0;
+    this.dawn = false;
+
     this.state = {
       ...this.state,
       timer: Date.now() * 0.0001,
@@ -73,7 +76,6 @@ class Game extends ExampleBase {
     delete this.stats;
   }
 
-
   handleChange(event) {
     axios.post('http://localhost:3000/vote/' + this.state.player + '/' + event.target.value);
   }
@@ -94,7 +96,7 @@ class Game extends ExampleBase {
       var data = response.data;
       if (data.queue) data.players = data.queue;
 
-      thisModule.setState(response.data);
+      thisModule.setState(data);
     })
   }
 
@@ -118,6 +120,13 @@ class Game extends ExampleBase {
 
     var time = roundLength - (timer - timeStart).toFixed(1) * 10;
 
+    if (this.day !== this.state.day) {
+      this.dawn = true;
+      this.day = this.state.day;
+    } else {
+      this.dawn = false;
+    }
+
     var avatars = {};
     if (this.state.avatars) {
       for (let avatar in this.state.avatars) {
@@ -131,6 +140,8 @@ class Game extends ExampleBase {
         players={this.state.players}
         me={this.state.player}
         handleChange={this.handleChange.bind(this)}
+        dawn={this.dawn}
+        night={this.state.night}
       />
       <React3
         width={width}

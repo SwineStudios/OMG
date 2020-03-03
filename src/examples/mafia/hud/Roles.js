@@ -3,12 +3,12 @@ import React from 'react';
 import Role from './Role';
 
 
-const Roles = ({ roles }) => {
+const Roles = ({ roles, role }) => {
 
   const icons = [];
   const sortedRoles = [];
 
-  for (var role in roles) {
+  for (let role in roles) {
     sortedRoles.push(role);
   }
 
@@ -27,6 +27,11 @@ const Roles = ({ roles }) => {
   return (
     <div>
       {icons}
+      <span style={{
+        'paddingLeft': '40px'
+      }}>
+        My role: {role}
+      </span>
     </div>
   );
 };
