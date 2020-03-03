@@ -30,6 +30,7 @@ let deadList = {
 }
 
 let report = '';
+let suspect = '';
 
 const avatars = {
   '1': {'x': -200, 'z': 200},
@@ -50,7 +51,16 @@ const setup = {
   'survivor': 3,
   'doctor': 1,
   'cop': 1
-}
+};
+
+let powerroles = {
+  'mafia1': '',
+  'mafia2': '',
+  'cop': '',
+  'doctor': ''
+};
+
+let nightvotes = {};
 
 let roles = [];
 
@@ -87,6 +97,7 @@ app.get('/update', (req, res) => {
   obj.night = night;
 
   obj.report = report;
+  obj.suspect = suspect;
 
   res.send(obj);
 });
@@ -111,6 +122,9 @@ const newGame = () => {
     for (let i = 0; i < setup[role]; i++)
       roles.push(role);
   shuffle(roles);
+
+  //for (let role in powerroles)
+    //nightvotes[role] = powerroles[role];
 };
 
 const newDay = () => {
@@ -125,41 +139,54 @@ const newDay = () => {
   each(players, (p) => {
     if (night && p.role !== 'survivor')
       p.vote = undefined;
+    if (!night)
+      p.vote = undefined;
   });
 };
 
 const countVotes = () => {
   if (night) {
-    const votes = {
-      'mafia1': '',
-      'mafia2': '',
-      'cop': '',
-      'doctor': ''
-    }
+    var nightvotes = {};
 
     each(players, (p) => {
       if (p.role === 'mafia') {
-        if (votes['mafia1'] === '')
-          votes['mafia1'] = p.vote;
+        if (!nightvotes['mafia1'])
+          nightvotes['mafia1'] = p.vote;
         else
-          votes['mafia2'] = p.vote;
+          nightvotes['mafia2'] = p.vote;
       } else if (p.role === 'doctor')
-        votes['doctor'] = p.vote;
+        nightvotes['doctor'] = p.vote;
       else if (p.role === 'cop')
-        votes['cop'] = p.vote;
+        nightvotes['cop'] = p.vote;
     });
 
-    if (votes['mafia1'] === votes['mafia2']) {
+    var mafiakill = false;
 
-      victim = votes['mafia1'];
+    if (nightvotes['mafia1'] && nightvotes['mafia2']) {
+      if (nightvotes['mafia1'] === nightvotes['mafia2'])
+        mafiakill = true;
+    }
+    else if (nightvotes['mafia1'])
+        mafiakill = true;
+    else if (nightvotes['mafia2'])
+      mafiakill = true;
 
-      if (votes[doctor] !== victim) {
-        delete players[victim];
-        deadList[victim] = true;
+    if (mafiakill) {
+
+      victim = nightvotes['mafia1'] || nightvotes['mafia2'];
+
+      if (nightvotes['doctor']) {
+        if (nightvotes['doctor'] !== victim) {
+          delete players[victim];
+          deadList[victim] = true;
+        }
       }
 
       //get cop report
-
+      if (nightvotes['cop']) {
+        report = players[nightvotes['cop']].role;
+        suspect = nightvotes['cop'];
+      }
       //
 
       newDay();
@@ -233,7 +260,6 @@ const filter = (collection, test) => {
   });
   return arr;
 };
-
 
 //================================
 //================================

@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Voting = ({ players, me, role, change, dawn, night }) => {
+const Voting = ({ players, me, role, change, dawn, night, report, suspect }) => {
 
   const votes = [];
   const mafiaVotes = [];
@@ -66,6 +66,21 @@ const Voting = ({ players, me, role, change, dawn, night }) => {
           'padding': '10px'
         }}>
           {mafiaVotes}
+        </div>
+        : null
+      }
+      {!night && role === 'cop' && report !== '' ?
+        <div style={{
+          'position': 'fixed',
+          'backgroundColor': 'gold',
+          'top': '120px',
+          'right': '250px',
+          'minWidth': '200px',
+          'padding': '10px'
+        }}>
+          <span> {"Player " + suspect + " is "} <span style={{
+            'backgroundColor': 'white'
+          }}>{report}</span>! <br /></span>
         </div>
         : null
       }

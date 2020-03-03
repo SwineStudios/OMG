@@ -147,6 +147,8 @@ class Game extends ExampleBase {
           handleChange={this.handleChange.bind(this)}
           dawn={this.dawn}
           night={this.state.night}
+          report={this.state.report}
+          suspect={this.state.suspect}
         />
       }
       <React3
