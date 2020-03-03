@@ -10,7 +10,7 @@ for (let i = 0; i < 50; i++) {
     .Vector2(Math.sin(i * 0.2) * Math.sin(i * 0.1) * 15 + 50, (i - 5) * 2));
 }
 
-const Player = ({ position, rotation, type }) => {
+const Player = ({ position, rotation, type, animate }) => {
 
   const body = [];
 
@@ -85,10 +85,16 @@ const Player = ({ position, rotation, type }) => {
     );
   }
 
+  let headPosition = new THREE.Vector3(position.x, 80, position.z);
+
+  let feet = 10;
+  if (animate)
+    feet = Math.floor(Math.random() * 9) + 4;
+
   body.push(
     <mesh
       key={0}
-      position={position}
+      position={headPosition}
       rotation={rotation}
     >
       {heads}
@@ -101,6 +107,22 @@ const Player = ({ position, rotation, type }) => {
   return (
     <group>
       {body}
+      <mesh
+        key={0}
+        position={position}
+        rotation={rotation}
+      >
+        <torusKnotGeometry
+          radius={50}
+          tube={10}
+          radialSegments={50}
+          tubularSegments={feet}
+          key={0}
+        />
+        <materialResource
+          resourceId="material"
+        />
+      </mesh>
     </group>
   );
 };

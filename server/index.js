@@ -29,6 +29,18 @@ const players = {
 let deadList = {
 }
 
+const movement = {
+  '1': false,
+  '2': false,
+  '3': false,
+  '4': false,
+  '5': false,
+  '6': false,
+  '7': false,
+  '8': false,
+  '9': false
+}
+
 let report = '';
 let suspect = '';
 
@@ -101,6 +113,8 @@ app.get('/update', (req, res) => {
   obj.report = report;
   obj.suspect = suspect;
 
+  obj.movement = movement
+
   res.send(obj);
 });
 
@@ -150,10 +164,15 @@ const newDay = () => {
 };
 
 const moveAvatars = () => {
-  if (Object.keys(avatarDest).length === 0)
+  if (Object.keys(avatarDest).length === 0) {
+    for (let move in movement)
+      movement[move] = false;
     return;
+  }
 
   for (avatar in avatarDest) {
+    movement[avatar] = true;
+
     let x = avatars[avatar].x - avatarDest[avatar].x;
     let z = avatars[avatar].z - avatarDest[avatar].z;
 
@@ -304,7 +323,7 @@ app.listen(PORT, () => {
   const mafia = () => {
 
     //check if room has filled
-    if (pregame && queue >= 1)//roles.length)
+    if (pregame && queue >= roles.length)
       beginning();
     //
 

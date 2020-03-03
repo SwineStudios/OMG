@@ -20,7 +20,7 @@ class Game extends ExampleBase {
     this.directionalLightPosition = new THREE.Vector3(1, 1, 0);
 
     this.objectPositions = {
-      players: {
+      avatars: {
         '1': new THREE.Vector3(-200, 0, 200),
         '2': new THREE.Vector3(0, 0, 200),
         '3': new THREE.Vector3(-400, 0, 0),
@@ -71,7 +71,6 @@ class Game extends ExampleBase {
     var thisModule = this;
 
     axios.get('http://localhost:3000/start/').then(function (response) {
-
       thisModule.setState(response.data);
     })
   }
@@ -161,7 +160,9 @@ class Game extends ExampleBase {
     var deadList = this.state.deadList || {};
 
     return (<div ref="container">
-      {this.state.dead ? "You are dead" :
+      {typeof this.state.players === 'number' ?
+        this.state.players + " players joined" :
+        (this.state.dead ? "You are dead" :
         <HUD 
           timer={time}
           players={this.state.players}
@@ -172,7 +173,7 @@ class Game extends ExampleBase {
           report={this.state.report}
           suspect={this.state.suspect}
         />
-      }
+      )}
       <React3
         width={width}
         height={height}
@@ -223,14 +224,10 @@ class Game extends ExampleBase {
           <Players
             positions={this.state.avatars ?
               avatars :
-              this.objectPositions['players']}
+              this.objectPositions['avatars']}
             rotations={objectRotation}
             dead={deadList}
-          />
-          <axisHelper
-            position={this.objectPositions['axis']}
-            size={50}
-            rotation={objectRotation}
+            movement={this.state.movement}
           />
         </scene>
       </React3>
