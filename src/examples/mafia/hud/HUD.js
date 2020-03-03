@@ -31,6 +31,9 @@ const HUD = ({ timer, players, me, handleChange, dawn, night, report, suspect })
     isSurvivor = (myRole === 'survivor');
   }
 
+  if (String(seconds).length === 1)
+    seconds = '0' + seconds;
+
   return (
     <div>
       {minutes + ':' + seconds}
@@ -39,33 +42,30 @@ const HUD = ({ timer, players, me, handleChange, dawn, night, report, suspect })
         'height': '20px',
         'backgroundColor': 'black'
       }}/>
-      {typeof players === 'number' ?
-        players + " players joined" :
-        <span>
-          <Roles roles={roles} role={myRole}/>
-          { !night || !isSurvivor ?
-            <span>
-              <div style={{
-                'width': '100%',
-                'height': '20px',
-                'backgroundColor': 'black'
-              }}/>
-              <Voting
-                players={players}
-                me={me}
-                role={myRole}
-                change={handleChange}
-                dawn={dawn}
-                night={night}
-                report={report}
-                suspect={suspect}
-              />
-            </span>
-            :
-            null
-          }
-        </span>
-      }
+      <span>
+        <Roles roles={roles} role={myRole}/>
+        { !night || !isSurvivor ?
+          <span>
+            <div style={{
+              'width': '100%',
+              'height': '20px',
+              'backgroundColor': 'black'
+            }}/>
+            <Voting
+              players={players}
+              me={me}
+              role={myRole}
+              change={handleChange}
+              dawn={dawn}
+              night={night}
+              report={report}
+              suspect={suspect}
+            />
+          </span>
+          :
+          null
+        }
+      </span>
     </div>
   );
 };

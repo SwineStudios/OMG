@@ -11,29 +11,7 @@ import ExampleBase from '../../ExampleBase';
 import Players from './objects/Players';
 import HUD from './hud/HUD';
 
-document.addEventListener("DOMContentLoaded", init, false);
 var canvas = null;
-function init() {
-  canvas = document.getElementsByTagName("canvas")[0];
-  canvas.addEventListener("mousedown", getPosition, false);
-}
-
-function getPosition(event) {
-  var x = new Number();
-  var y = new Number();
-  if (event.x != undefined && event.y != undefined) {
-    x = event.x;
-    y = event.y;
-  } else { // Firefox method to get the position
-    x = event.clientX + document.body.scrollLeft +
-        document.documentElement.scrollLeft;
-    y = event.clientY + document.body.scrollTop +
-        document.documentElement.scrollTop;
-  }
-  x -= canvas.offsetLeft;
-  y -= canvas.offsetTop;
-  alert("x: " + x + "  y: " + y);
-}
 
 class Game extends ExampleBase { 
   constructor(props, context) {
@@ -42,7 +20,7 @@ class Game extends ExampleBase {
     this.directionalLightPosition = new THREE.Vector3(1, 1, 0);
 
     this.objectPositions = {
-      players: {
+      avatars: {
         '1': new THREE.Vector3(-200, 0, 200),
         '2': new THREE.Vector3(0, 0, 200),
         '3': new THREE.Vector3(-400, 0, 0),
@@ -84,13 +62,15 @@ class Game extends ExampleBase {
 
     this.refs.container.appendChild(this.stats.domElement);
 
+    //click listener
+    canvas = document.getElementsByTagName("canvas")[0];
+    canvas.addEventListener("mousedown", this.getPosition.bind(this), false);
 
     //get initial data
 
     var thisModule = this;
 
     axios.get('http://localhost:3000/start/').then(function (response) {
-
       thisModule.setState(response.data);
     })
   }
@@ -123,6 +103,24 @@ class Game extends ExampleBase {
 
       thisModule.setState(data);
     })
+  }
+
+  getPosition(event) {
+    var x = new Number();
+    var y = new Number();
+    if (event.x != undefined && event.y != undefined) {
+      x = event.x;
+      y = event.y;
+    } else { // Firefox method to get the position
+      x = event.clientX + document.body.scrollLeft +
+          document.documentElement.scrollLeft;
+      y = event.clientY + document.body.scrollTop +
+          document.documentElement.scrollTop;
+    }
+    x -= canvas.offsetLeft;
+    y -= canvas.offsetTop;
+    //alert("x: " + x + "  y: " + y);
+    axios.post('http://localhost:3000/click/' + this.state.player + '/' + x + '/' + y);
   }
 
   render() {
@@ -162,7 +160,9 @@ class Game extends ExampleBase {
     var deadList = this.state.deadList || {};
 
     return (<div ref="container">
-      {this.state.dead ? "You are dead" :
+      {typeof this.state.players === 'number' ?
+        this.state.players + " players joined" :
+        (this.state.dead ? "You are dead" :
         <HUD 
           timer={time}
           players={this.state.players}
@@ -173,7 +173,7 @@ class Game extends ExampleBase {
           report={this.state.report}
           suspect={this.state.suspect}
         />
-      }
+      )}
       <React3
         width={width}
         height={height}
@@ -224,14 +224,10 @@ class Game extends ExampleBase {
           <Players
             positions={this.state.avatars ?
               avatars :
-              this.objectPositions['players']}
+              this.objectPositions['avatars']}
             rotations={objectRotation}
             dead={deadList}
-          />
-          <axisHelper
-            position={this.objectPositions['axis']}
-            size={50}
-            rotation={objectRotation}
+            movement={this.state.movement}
           />
         </scene>
       </React3>
