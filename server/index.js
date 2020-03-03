@@ -29,6 +29,8 @@ const players = {
 let deadList = {
 }
 
+let report = '';
+
 const avatars = {
   '1': {'x': -200, 'z': 200},
   '2': {'x': 0, 'z': 200},
@@ -84,6 +86,8 @@ app.get('/update', (req, res) => {
   obj.day = day;
   obj.night = night;
 
+  obj.report = report;
+
   res.send(obj);
 });
 
@@ -115,19 +119,55 @@ const newDay = () => {
   day++;
   night = !night;
 
-  each(players, (p) => {
+  if (night)
+    report = '';
 
+  each(players, (p) => {
     if (night && p.role !== 'survivor')
       p.vote = undefined;
   });
 };
 
 const countVotes = () => {
-  const votes = {};
-
   if (night) {
+    const votes = {
+      'mafia1': '',
+      'mafia2': '',
+      'cop': '',
+      'doctor': ''
+    }
+
+    each(players, (p) => {
+      if (p.role === 'mafia') {
+        if (votes['mafia1'] === '')
+          votes['mafia1'] = p.vote;
+        else
+          votes['mafia2'] = p.vote;
+      } else if (p.role === 'doctor')
+        votes['doctor'] = p.vote;
+      else if (p.role === 'cop')
+        votes['cop'] = p.vote;
+    });
+
+    if (votes['mafia1'] === votes['mafia2']) {
+
+      victim = votes['mafia1'];
+
+      if (votes[doctor] !== victim) {
+        delete players[victim];
+        deadList[victim] = true;
+      }
+
+      //get cop report
+
+      //
+
+      newDay();
+    }
 
   } else {
+    const votes = {};
+
     each(players, (p) => {
       if (votes[p.vote])
         votes[p.vote]++;
