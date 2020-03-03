@@ -95,6 +95,8 @@ class Game extends ExampleBase {
 
       var data = response.data;
       if (data.queue) data.players = data.queue;
+      if (!data.players[thisModule.state.player]) data.dead = true;
+      else data.dead = false;
 
       thisModule.setState(data);
     })
@@ -134,15 +136,19 @@ class Game extends ExampleBase {
       }
     }
 
+    var deadList = this.state.deadList || {};
+
     return (<div ref="container">
-      <HUD 
-        timer={time}
-        players={this.state.players}
-        me={this.state.player}
-        handleChange={this.handleChange.bind(this)}
-        dawn={this.dawn}
-        night={this.state.night}
-      />
+      {this.state.dead ? "You are dead" :
+        <HUD 
+          timer={time}
+          players={this.state.players}
+          me={this.state.player}
+          handleChange={this.handleChange.bind(this)}
+          dawn={this.dawn}
+          night={this.state.night}
+        />
+      }
       <React3
         width={width}
         height={height}
@@ -191,10 +197,11 @@ class Game extends ExampleBase {
             lookAt={this.scenePosition}
           />
           <Players
-            positions = {this.state.avatars ?
+            positions={this.state.avatars ?
               avatars :
               this.objectPositions['players']}
-            rotations = {objectRotation}
+            rotations={objectRotation}
+            dead={deadList}
           />
           <axisHelper
             position={this.objectPositions['axis']}

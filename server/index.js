@@ -26,6 +26,9 @@ let time = Date.now() * 0.0001;
 const players = {
 }
 
+let deadList = {
+}
+
 const avatars = {
   '1': {'x': -200, 'z': 200},
   '2': {'x': 0, 'z': 200},
@@ -76,6 +79,7 @@ app.get('/update', (req, res) => {
     obj.players = queue;
 
   obj.avatars = avatars;
+  obj.deadList = deadList;
 
   obj.day = day;
   obj.night = night;
@@ -97,6 +101,7 @@ app.post('/click/:player/:x/:z', (req, res) => {
 
 const newGame = () => {
   dawn = true;
+  deadList = {};
   roles = [];
   for (let role in setup)
     for (let i = 0; i < setup[role]; i++)
@@ -144,7 +149,7 @@ const countVotes = () => {
 
     if (victim !== '') {
       delete players[victim];
-      console.log(players);
+      deadList[victim] = true;
       newDay();
     }
   }
@@ -228,7 +233,7 @@ app.listen(PORT, () => {
 
     //handle player behavior
     const nonVoters = filter(players, (p) => {
-      return typeof p.vote === "undefined"
+      return typeof p.vote === "undefined";
     });
 
     if (nonVoters.length === 0) {
