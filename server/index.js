@@ -42,6 +42,9 @@ const avatars = {
   '7': {'x': -200, 'z': -200}
 }
 
+const avatarDest = {
+}
+
 let pregame = false;
 let day = 0;
 let night = false;
@@ -63,7 +66,6 @@ let powerroles = {
 let nightvotes = {};
 
 let roles = [];
-
 
 //================================
 //================================
@@ -108,7 +110,10 @@ app.post('/vote/:player/:target', (req, res) => {
 });
 
 app.post('/click/:player/:x/:z', (req, res) => {
-
+  let x = (req.params.x - 400) * 1.3;
+  let z = (req.params.z - 400) * 1.3;
+  avatarDest[req.params.player] = {'x': z, 'z': -x};
+  res.end();
 });
 
 //================================
@@ -144,9 +149,29 @@ const newDay = () => {
   });
 };
 
+const moveAvatars = () => {
+  if (Object.keys(avatarDest).length === 0)
+    return;
+
+  for (avatar in avatarDest) {
+    let x = avatars[avatar].x - avatarDest[avatar].x;
+    let z = avatars[avatar].z - avatarDest[avatar].z;
+
+    if (Math.abs(x) < 20 && Math.abs(z) < 20) {
+      delete avatarDest[avatar];
+    }
+
+    let signx = x < 0 ? 1 : -1;
+    let signz = z < 0 ? 1 : -1;
+
+    avatars[avatar].x += 10 * signx;
+    avatars[avatar].z += 10 * signz;
+  }
+}
+
 const countVotes = () => {
   if (night) {
-    var nightvotes = {};
+    let nightvotes = {};
 
     each(players, (p) => {
       if (p.role === 'mafia') {
@@ -160,7 +185,7 @@ const countVotes = () => {
         nightvotes['cop'] = p.vote;
     });
 
-    var mafiakill = false;
+    let mafiakill = false;
 
     if (nightvotes['mafia1'] && nightvotes['mafia2']) {
       if (nightvotes['mafia1'] === nightvotes['mafia2'])
@@ -264,7 +289,7 @@ const filter = (collection, test) => {
 //================================
 //================================
 
-const framelength = 200;
+const framelength = 50;
 
 //================================
 //================================
@@ -307,8 +332,9 @@ app.listen(PORT, () => {
     }
     //
     
-
-
+    //move 3D models
+    moveAvatars();
+    //
 
     setTimeout(mafia, framelength);
   };
