@@ -23,7 +23,7 @@
   "homepage": "https://github.com/SwineStudios/OMG#readme",
   "dependencies": {
     "@babel/register": "^7.8.6",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cannon": "^0.6.2",
     "cors": "^2.8.5",
     "history": "^4.6.3",
