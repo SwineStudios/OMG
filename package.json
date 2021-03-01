@@ -36,7 +36,7 @@
     "react-sizeme": "^2.3.4",
     "react-three-renderer": "^3.2.1",
     "stats.js": "^1.0.0",
-    "three": "^0.86.0"
+    "three": "^0.125.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
